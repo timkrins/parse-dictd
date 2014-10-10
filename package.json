@@ -1,6 +1,6 @@
 {
   "name": "parse-dictd",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "parse dictd dictionary files (.dict.dz and .index)",
   "main": "index.js",
   "bin": {
