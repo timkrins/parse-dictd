@@ -1,0 +1,40 @@
+{
+  "name": "parse-dictd",
+  "version": "1.0.0",
+  "description": "parse dictd dictionary files (.dict.dz and .index)",
+  "main": "index.js",
+  "bin": {
+    "parse-dictd": "bin/cmd.js"
+  },
+  "dependencies": {
+    "minimist": "^1.1.0",
+    "read-only-stream": "^1.1.1",
+    "split": "~0.3.0",
+    "through2": "^1.1.1"
+  },
+  "devDependencies": {
+    "tape": "^3.0.0"
+  },
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/substack/parse-dictd.git"
+  },
+  "homepage": "https://github.com/substack/parse-dictd",
+  "keywords": [
+    "dictd",
+    "dict.dz",
+    "dictionary",
+    "language",
+    "translation",
+    "format"
+  ],
+  "author": {
+    "name": "James Halliday",
+    "email": "mail@substack.net",
+    "url": "http://substack.net"
+  },
+  "license": "MIT"
+}
