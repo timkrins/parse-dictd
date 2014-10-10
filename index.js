@@ -1,43 +1,60 @@
 var through = require('through2');
+var readonly = require('read-only-stream');
+var decode64 = require('./lib/decode.js');
 var split = require('split');
-var readonly = require('readonly');
+var bounds = require('binary-search-bounds');
 
 module.exports = function (dstream, istream) {
-    var indexes = {};
-    istream.pipe(split()).pipe(through.obj(iwrite, iend));
+    var offsets = {};
+    istream.pipe(split('\n')).pipe(through.obj(iwrite, iend));
     
-    var output = through.obj();
-    var pos = 0;
+    var pos = 0, line = [];
+    var output = through.obj(dwrite);
     return readonly(output);
     
     function iwrite (buf, enc, next) {
         var fields = buf.toString('utf8').split('\t');
+        if (fields.length !== 3) return next();
+        
         var word = fields[0];
-        var offset = decode(fields[1]);
-        var size = decode(fields[2]); // maybe
-        indexes[offset] = word;
+        var offset = decode64(fields[1]);
+        var size = decode64(fields[2]); // maybe
+        offsets[offset] = { word: word };
         next();
     }
     function iend () {
-        dstream.pipe(split('\n')).pipe(through.obj(dwrite, dend));
+        dstream.pipe(output);
     }
     
     function dwrite (buf, enc, next) {
-        var line = buf.toString('utf8');
-        if (indexes[pos]) {
-            console.log('line=', line, 'word=', indexes[pos]);
+        var offset = 0;
+        for (var i = 0; i < buf.length; i++) {
+            if (buf[i] === 10) {
+                line.push(buf.slice(offset, i + 1));
+                process(Buffer.concat(line));
+                offset = i + 1;
+                line = [];
+            }
         }
-        pos += buf.length + 1;
+        line.push(buf.slice(offset, i + 1));
         next();
+    }
+    
+    function process (buf) {
+        var line = buf.toString('utf8');
+        var to = line.replace(/^\w+:/, '').trim().split(',');
+        if (offsets[pos]) {
+            output.push({ from: offsets[pos].word, to: to });
+        }
+        pos += buf.length;
     }
 };
 
-function decode64 (s) {
-    if (s.length === 1) s += 'A';
-    var buf = Buffer(s, 'base64');
-    var index = 0, len = buf.length;;
-    for (var i = 0; i < len; i++) {
-        index += Math.pow(256,len-i-1) * buf[i];
-    }
-    return index;
+function cmp (a, b) {
+    return a.offset < b.offset ? -1 : 1;
+}
+
+function ncmp (a, b) {
+    var na = Number(a), nb = Number(b);
+    return na < nb ? -1 : 1;
 }
