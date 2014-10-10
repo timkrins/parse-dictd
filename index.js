@@ -2,7 +2,6 @@ var through = require('through2');
 var readonly = require('read-only-stream');
 var decode64 = require('./lib/decode.js');
 var split = require('split');
-var bounds = require('binary-search-bounds');
 
 module.exports = function (dstream, istream) {
     var offsets = {};
