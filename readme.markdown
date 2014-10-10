@@ -59,4 +59,30 @@ $ node example/dict.js /usr/share/dictd/stardic.{dict.dz,index} | head -n30
 { from: 'a column of water', to: [ '水柱' ] }
 ```
 
+# methods
 
+
+``` js
+var parse = require('parse-dictd')
+```
+
+## var r = parse(dstream, istream)
+
+Return a readable object stream `r` that parses two input streams:
+
+* `dstream` - an uncompressed stream of `.dict.dz` data
+* `istream` - a stream of `.index` data
+
+`r` generates output as objects with `from` and `to` properties.
+
+# install
+
+With [npm](https://npmjs.org) do:
+
+```
+npm install parse-dictd
+```
+
+# license
+
+MIT
