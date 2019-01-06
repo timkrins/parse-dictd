@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "parse dictd dictionary files (.dict.dz and .index)",
   "main": "index.js",
+  "types": "index.d.ts",
   "bin": {
     "parse-dictd": "bin/cmd.js"
   },
