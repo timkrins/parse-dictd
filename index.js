@@ -64,7 +64,10 @@ module.exports = function(dstream, istream) {
             .replace(/^\w+:/, '')
             .trim()
             .split(/[,]/);
-        output.push({ from: offsets[pos].word, to: to });
+
+        if (offsets[pos]) {
+            output.push({ from: offsets[pos].word, to: to });
+        }
     }
 };
 
